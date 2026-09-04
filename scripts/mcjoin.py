@@ -100,6 +100,14 @@ host, port, name, protocol = sys.argv[1], int(sys.argv[2]), sys.argv[3], int(sys
 # The serverbound Chat Command id moves between protocol versions, so it is an argument here
 # rather than a constant that would be wrong on the next one.
 CHAT_COMMAND_ID = int(sys.argv[5], 0)
+
+# Play-state packets this client has to answer. Like the command id these move between
+# versions; all four were read out of Velocity's own StateRegistry rather than guessed, by
+# disassembling it and pairing each ProtocolVersion with the id pushed just before it.
+START_CONFIGURATION = 0x76      # clientbound: the proxy is moving us to another server
+ACKNOWLEDGE_CONFIGURATION = 0x10  # serverbound: our answer to it
+KEEP_ALIVE_IN = 0x2C
+KEEP_ALIVE_OUT = 0x1C
 # The payload shape moved too: "plain" is the unsigned packet (just the text), "signed" is the
 # session one that carries a timestamp, a salt and an empty acknowledgement block.
 SHAPE = sys.argv[6]
@@ -117,7 +125,10 @@ deadline = time.time() + 40
 sock.settimeout(1.0)
 
 while time.time() < deadline:
-    if next_command_at is not None and time.time() >= next_command_at:
+    # Only ever type while actually in the game. A command written during a configuration
+    # phase - which is what a server switch drops the connection back into - is read as
+    # whatever configuration packet shares that id, and the connection is closed.
+    if state == "PLAY" and next_command_at is not None and time.time() >= next_command_at:
         if sent < len(commands):
             command = commands[sent]
             sent += 1
@@ -190,6 +201,20 @@ while time.time() < deadline:
             next_command_at = time.time() + 1
         continue
 
+    if state == "PLAY" and packet_id == KEEP_ALIVE_IN:
+        # Unanswered keep-alives are what disconnect a client that is only watching.
+        sock.sendall(packet(KEEP_ALIVE_OUT, body[offset:]))
+        continue
+
+    if state == "PLAY" and packet_id == START_CONFIGURATION:
+        # A server switch. The connection goes back through the configuration phase, and a
+        # client that stays in PLAY reads the next packet as garbage and falls over - which is
+        # exactly what happens on the hop to the lobby after logging in.
+        sock.sendall(packet(ACKNOWLEDGE_CONFIGURATION, b""))
+        state = "CONFIG"
+        print("-> reconfiguring, state=CONFIG")
+        continue
+
     # In PLAY, decode as UTF-8 before looking for anything - the interesting messages are
     # Polish, and a byte-wise filter turns every accented letter into noise that then fails to
     # match the very words being looked for.
@@ -197,7 +222,8 @@ while time.time() < deadline:
     readable = "".join(character if character.isprintable() else "." for character in text)
 
     if any(word in readable for word in (
-            "LOGOWANIE", "REJESTRACJA", "Błąd", "hasło", "LANDMC", "Najpierw", "Witaj", "Konto")):
+            "LOGOWANIE", "REJESTRACJA", "Błąd", "hasło", "LANDMC", "Najpierw", "Witaj", "Konto",
+            "Serwery", "Znajomi", "Kary", "Lobby", "Limbo", "Graczy")):
         print("PLAY id=0x%02X %s" % (packet_id, readable[:300]))
 
 sock.close()

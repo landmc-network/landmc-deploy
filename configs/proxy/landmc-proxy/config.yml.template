@@ -36,3 +36,13 @@ messaging:
     database: 0
     ssl: false
     channel-prefix: landmc
+
+# The server menu. Only what is listed here appears, in this order - listing whatever is in
+# velocity.toml would put the limbo in it, which is a world with nothing in it that a player
+# would click once and then have to be rescued from.
+menus:
+  servers-enabled: true
+  servers:
+    lobby: Lobby
+  # A socket, not a Minecraft ping: the backends run with enable-status=false.
+  reachability-timeout-millis: 1500

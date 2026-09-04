@@ -60,6 +60,9 @@ done
 # are edited in place rather than the whole file being shipped from here.
 python3 scripts/paper-proxy-config.py servers/lobby/config/paper-global.yml
 
+# The lobby is a build that is pasted in, not terrain, so its world is generated empty.
+python3 scripts/bukkit-generator.py servers/lobby/bukkit.yml lobby landmc-lobby
+
 while IFS= read -r template; do
     render_to "$template" "${template%.template}"
 done < <(find servers -name '*.template' -type f)

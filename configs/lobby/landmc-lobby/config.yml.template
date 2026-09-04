@@ -24,3 +24,15 @@ messaging:
     database: 0
     ssl: false
     channel-prefix: landmc
+
+# The world settings the plugin applies at startup. Which world is generated empty is decided in
+# servers/lobby/bukkit.yml; this only says which worlds get the spawn point and the game rules.
+world:
+  worlds:
+    - lobby
+  set-spawn-point: true
+  spawn-x: 0.0
+  spawn-y: 100.0
+  spawn-z: 0.0
+  gamerules:
+    randomTickSpeed: '0'

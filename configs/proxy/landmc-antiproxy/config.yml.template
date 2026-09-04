@@ -1,0 +1,26 @@
+# See the note in configs/proxy/landmc-proxy: deployment-owned settings only, with ${...}
+# resolved by the plugin from the container's environment.
+#
+# The API keys are NOT here and never should be. They go in
+# servers/proxy/plugins/landmc-antiproxy/proxyradar.key and maxmind.key, or in the environment
+# variables named in the plugin's own config - a key in a config file ends up in a paste the
+# first time somebody asks for help with their settings.
+
+# ENFORCE actually denies the connection; MONITOR only writes what it would have done.
+mode: MONITOR
+
+cache:
+  # Shared through the database, so a second proxy checking the same address spends no request
+  # against the per-minute quota.
+  database: true
+
+database:
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
+  use-ssl: false
+  # The address cache is read once per new address, not per tick.
+  pool-size: 4

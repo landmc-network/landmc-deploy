@@ -79,6 +79,11 @@ services:
     environment:
       <<: *landmc-credentials
       JAVA_MEMORY: ${PROXY_MEMORY:-1G}
+    # Keeps the server console usable: `docker attach landmc-proxy-1` gives the same prompt
+    # a panel would, which is how an operator runs a command without a plugin for it.
+    # Detach with ctrl-p ctrl-q; ctrl-c would stop the server.
+    stdin_open: true
+    tty: true
     networks: [internal]
     stop_grace_period: 30s
 
@@ -97,6 +102,11 @@ services:
     environment:
       <<: *landmc-credentials
       JAVA_MEMORY: ${LOBBY_MEMORY:-2G}
+    # Keeps the server console usable: `docker attach landmc-lobby-1` gives the same prompt
+    # a panel would, which is how an operator runs a command without a plugin for it.
+    # Detach with ctrl-p ctrl-q; ctrl-c would stop the server.
+    stdin_open: true
+    tty: true
     networks: [internal]
     # Paper needs time to save chunks; killing it early is how a world gets corrupted.
     stop_grace_period: 120s

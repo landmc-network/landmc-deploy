@@ -21,6 +21,7 @@ readonly ORG=landmc-network
 readonly ARTIFACTS=(
     "landmc-proxy|landmc-proxy|servers/proxy/plugins/landmc-proxy.jar"
     "landmc-lobby|landmc-lobby|servers/lobby/plugins/landmc-lobby.jar"
+    "landmc-antiproxy|landmc-antiproxy|servers/proxy/plugins/landmc-antiproxy.jar"
     "landmc-vanish|landmc-vanish-proxy|servers/proxy/plugins/landmc-vanish-proxy.jar"
     "landmc-vanish|landmc-vanish-paper|servers/lobby/plugins/landmc-vanish-paper.jar"
 )

@@ -1,0 +1,80 @@
+# Velocity 4.1.1. Everything a player reaches goes through here.
+#
+# Written against the schema Velocity 4.1.1 generates, not an older one. That matters more than
+# it sounds: a missing section is not reported as an error, it is filled in with values that
+# may not be the documented defaults. Leaving out [packet-limiter] was enough to have every
+# player pass the login and then be silently dropped before reaching a backend, with nothing in
+# the log to say why. If this file is ever ported to a newer Velocity, diff it against a
+# freshly generated one rather than assuming the old keys still cover everything.
+config-version = "2.8"
+
+bind = "0.0.0.0:25565"
+motd = "<gradient:#00FF37:#95ff00>LandMC</gradient>"
+show-max-players = 500
+
+online-mode = true
+
+# Requires the client to present a signed profile key. Left on: turning it off is what lets
+# somebody connect with another player's name through a proxy that does not verify.
+force-key-authentication = true
+prevent-client-proxy-connections = false
+
+# The backends trust whatever this proxy tells them about a player, which is only safe because
+# they are not reachable from outside the compose network and the secret has to match.
+player-info-forwarding-mode = "MODERN"
+forwarding-secret-file = "forwarding.secret"
+
+announce-forge = false
+kick-existing-players = false
+ping-passthrough = "DISABLED"
+sample-players-in-ping = false
+enable-player-address-logging = true
+
+[packet-limiter]
+# -1 is "no limit"; the section has to be present even so.
+interval = 7
+packets-per-second = -1
+bytes-per-second = -1
+decompressed-bytes-per-second = 5242880
+
+[servers]
+# Container names on the compose network; no backend is reachable from outside it.
+lobby = "lobby:25565"
+
+# Where a player lands. The plugin has its own fallback configuration for the cases Velocity
+# cannot decide on its own.
+try = [
+    "lobby"
+]
+
+[forced-hosts]
+# Deliberately empty: a forced host pointing at a server that has been removed stops the proxy
+# from starting at all.
+
+[advanced]
+compression-threshold = 256
+compression-level = -1
+login-ratelimit = 3000
+connection-timeout = 5000
+read-timeout = 30000
+haproxy-protocol = false
+tcp-fast-open = false
+bungee-plugin-message-channel = true
+show-ping-requests = false
+failover-on-unexpected-server-disconnect = true
+announce-proxy-commands = true
+log-command-executions = false
+log-player-connections = true
+accepts-transfers = false
+enable-reuse-port = false
+command-rate-limit = 50
+forward-commands-if-rate-limited = true
+kick-after-rate-limited-commands = 0
+tab-complete-rate-limit = 10
+kick-after-rate-limited-tab-completes = 0
+
+[query]
+enabled = false
+port = 25565
+map = "LandMC"
+show-plugins = false

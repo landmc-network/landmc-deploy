@@ -1,0 +1,34 @@
+# Only what the deployment decides: hostnames, credentials and the server's own identity.
+# Everything else the plugin fills in with its own defaults on first start, and is edited in
+# servers/proxy/plugins/landmc-proxy/config.yml from then on.
+
+proxy:
+  server-id: proxy-1
+
+routing:
+  fallback-server: lobby
+
+friends:
+  enabled: true
+
+database:
+  type: MARIADB
+  host: mariadb
+  port: 3306
+  database: ${MARIADB_DATABASE}
+  username: ${MARIADB_USER}
+  password: '${MARIADB_PASSWORD}'
+  use-ssl: false
+  # The proxy only touches the database for the friends list, which is not a hot path.
+  pool-size: 4
+
+messaging:
+  enabled: true
+  redis:
+    host: redis
+    port: 6379
+    username: ''
+    password: '${REDIS_PASSWORD}'
+    database: 0
+    ssl: false
+    channel-prefix: landmc

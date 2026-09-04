@@ -1,0 +1,21 @@
+# Secrets and machine-local state.
+.env
+forwarding.secret
+
+# Everything a server writes at runtime. The repository holds configuration, not worlds.
+servers/*/logs/
+servers/*/cache/
+servers/*/libraries/
+servers/*/versions/
+servers/*/world*/
+servers/*/plugins/
+servers/*/config/paper-global.yml
+
+# Kept: the previous config a deploy replaced is a local artefact, not history.
+*.previous
+servers/*/*.log
+servers/*/banned-*.json
+servers/*/ops.json
+servers/*/whitelist.json
+servers/*/usercache.json
+servers/*/eula.txt

@@ -1,0 +1,92 @@
+# The LandMC network, as one stack.
+#
+# Only the proxy is reachable from outside. Redis, the database and every backend sit on an
+# internal network with no published ports: a backend that a player can connect to directly is
+# a backend that bypasses the proxy, and with player-info forwarding on, that is enough to join
+# as anyone.
+#
+# Copy .env.example to .env before the first start; the secrets have no defaults on purpose.
+
+name: landmc
+
+services:
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    command: >-
+      redis-server
+      --requirepass ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+      --appendonly no
+      --save ""
+    # Messaging is live state - who is where, requests in flight - and none of it is worth
+    # keeping across a restart. Persistence off means no disk writes on the hot path.
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  mariadb:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:?set MARIADB_ROOT_PASSWORD in .env}
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-landmc}
+      MARIADB_USER: ${MARIADB_USER:-landmc}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:?set MARIADB_PASSWORD in .env}
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  proxy:
+    build:
+      context: ./docker/velocity
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+    ports:
+      # The only port that reaches the outside world.
+      - "${PROXY_PORT:-25565}:25565"
+    volumes:
+      - ./servers/proxy:/server
+    # Writes as the host user that owns servers/, so logs and generated configs are editable
+    # without sudo and a stray root-owned file cannot block the next deploy.
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      JAVA_MEMORY: ${PROXY_MEMORY:-1G}
+    networks: [internal]
+    stop_grace_period: 30s
+
+  lobby:
+    build:
+      context: ./docker/paper
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./servers/lobby:/server
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      JAVA_MEMORY: ${LOBBY_MEMORY:-2G}
+    networks: [internal]
+    # Paper needs time to save chunks; killing it early is how a world gets corrupted.
+    stop_grace_period: 120s
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  mariadb-data:

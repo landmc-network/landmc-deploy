@@ -1,0 +1,26 @@
+# See the note in configs/proxy/landmc-proxy: deployment-owned settings only, with ${...}
+# resolved by the plugin from the container's environment.
+
+server-id: proxy-1
+
+database:
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
+  use-ssl: false
+  # Read once at startup and once per punishment; the login check never touches it.
+  pool-size: 4
+
+messaging:
+  enabled: true
+  redis:
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
+    username: ''
+    password: ${LANDMC_REDIS_PASSWORD}
+    database: 0
+    ssl: false
+    channel-prefix: landmc

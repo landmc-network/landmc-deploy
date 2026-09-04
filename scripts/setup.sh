@@ -50,15 +50,23 @@ printf '%s' "$FORWARDING_SECRET" > servers/proxy/forwarding.secret
 chmod 600 servers/proxy/forwarding.secret
 echo "wrote servers/proxy/forwarding.secret"
 
-# Paper wants the same secret inside its own config, so that one is a template.
+# Paper wants the same secret inside its own config. That file belongs to Paper - it carries a
+# schema version and Paper migrates it between releases - so the two keys the deployment owns
+# are edited in place rather than the whole file being shipped from here.
+python3 scripts/paper-proxy-config.py servers/lobby/config/paper-global.yml
+
 while IFS= read -r template; do
     render_to "$template" "${template%.template}"
 done < <(find servers -name '*.template' -type f)
 
-# Plugin configuration is versioned in configs/ and rendered into place, so a fresh checkout
+# Plugin configuration is versioned in configs/ and copied into place, so a fresh checkout
 # produces a network that talks to the right Redis and database without anyone editing YAML by
 # hand. The plugin fills in every other field on first start and owns the file from then on,
 # which is why the previous copy is kept rather than merged.
+#
+# Copied verbatim, not rendered: the ${LANDMC_*} names in these files are resolved by the
+# plugin itself from the container's environment. Expanding them here would write the database
+# password into every plugin's config.yml, which is what the placeholders exist to avoid.
 install_plugin_configs() {
     local source server template destination
     for source in configs/*/; do
@@ -70,7 +78,9 @@ install_plugin_configs() {
             if [ -f "$destination" ]; then
                 cp "$destination" "$destination.previous"
             fi
-            render_to "$template" "$destination"
+            cp "$template" "$destination"
+            chmod 600 "$destination"
+            echo "installed $destination"
         done < <(find "$source" -name '*.template' -type f)
     done
 }

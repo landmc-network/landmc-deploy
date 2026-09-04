@@ -1,6 +1,10 @@
-# Only what the deployment decides: hostnames, credentials and the server's own identity.
-# Everything else the plugin fills in with its own defaults on first start, and is edited in
-# servers/proxy/plugins/landmc-proxy/config.yml from then on.
+# Only what the deployment decides. Everything else the plugin fills in with its own defaults
+# on first start, and is edited in servers/proxy/plugins/landmc-proxy/config.yml from then on.
+#
+# The ${...} names are resolved by the plugin at startup, from the container's environment -
+# compose passes them in from .env. They are deliberately NOT expanded here: the credentials
+# then exist in .env and nowhere under plugins/, and moving the database is one edit for the
+# whole network rather than one per plugin.
 
 proxy:
   server-id: proxy-1
@@ -12,12 +16,12 @@ friends:
   enabled: true
 
 database:
-  type: MARIADB
-  host: mariadb
-  port: 3306
-  database: ${MARIADB_DATABASE}
-  username: ${MARIADB_USER}
-  password: '${MARIADB_PASSWORD}'
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
   use-ssl: false
   # The proxy only touches the database for the friends list, which is not a hot path.
   pool-size: 4
@@ -25,10 +29,10 @@ database:
 messaging:
   enabled: true
   redis:
-    host: redis
-    port: 6379
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
     username: ''
-    password: '${REDIS_PASSWORD}'
+    password: ${LANDMC_REDIS_PASSWORD}
     database: 0
     ssl: false
     channel-prefix: landmc

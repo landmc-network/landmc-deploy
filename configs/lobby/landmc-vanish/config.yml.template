@@ -1,0 +1,14 @@
+# See the note in configs/proxy.
+
+server-id: lobby-1
+
+messaging:
+  enabled: true
+  redis:
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
+    username: ''
+    password: ${LANDMC_REDIS_PASSWORD}
+    database: 0
+    ssl: false
+    channel-prefix: landmc

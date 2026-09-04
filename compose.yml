@@ -9,6 +9,21 @@
 
 name: landmc
 
+# The connection details every LandMC plugin needs, in one place. The plugins read ${LANDMC_*}
+# out of their own environment, so these names appear in each plugin's config.yml as
+# placeholders and the values exist only here and in .env - moving the database is one edit for
+# the whole network instead of one per plugin folder.
+x-landmc-credentials: &landmc-credentials
+  LANDMC_DB_TYPE: MARIADB
+  LANDMC_DB_HOST: mariadb
+  LANDMC_DB_PORT: "3306"
+  LANDMC_DB_NAME: ${MARIADB_DATABASE:-landmc}
+  LANDMC_DB_USER: ${MARIADB_USER:-landmc}
+  LANDMC_DB_PASSWORD: ${MARIADB_PASSWORD:?set MARIADB_PASSWORD in .env}
+  LANDMC_REDIS_HOST: redis
+  LANDMC_REDIS_PORT: "6379"
+  LANDMC_REDIS_PASSWORD: ${REDIS_PASSWORD:?set REDIS_PASSWORD in .env}
+
 services:
   redis:
     image: redis:8-alpine
@@ -62,6 +77,7 @@ services:
     # without sudo and a stray root-owned file cannot block the next deploy.
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     environment:
+      <<: *landmc-credentials
       JAVA_MEMORY: ${PROXY_MEMORY:-1G}
     networks: [internal]
     stop_grace_period: 30s
@@ -79,6 +95,7 @@ services:
       - ./servers/lobby:/server
     user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
     environment:
+      <<: *landmc-credentials
       JAVA_MEMORY: ${LOBBY_MEMORY:-2G}
     networks: [internal]
     # Paper needs time to save chunks; killing it early is how a world gets corrupted.

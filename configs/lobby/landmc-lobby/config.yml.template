@@ -1,25 +1,26 @@
-# See the note in configs/proxy: deployment-owned settings only.
+# See the note in configs/proxy: deployment-owned settings only, and ${...} resolved by the
+# plugin from the environment rather than expanded into this file.
 
 lobby:
   server-id: lobby-1
 
 database:
-  type: MARIADB
-  host: mariadb
-  port: 3306
-  database: ${MARIADB_DATABASE}
-  username: ${MARIADB_USER}
-  password: '${MARIADB_PASSWORD}'
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
   use-ssl: false
   pool-size: 8
 
 messaging:
   enabled: true
   redis:
-    host: redis
-    port: 6379
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
     username: ''
-    password: '${REDIS_PASSWORD}'
+    password: ${LANDMC_REDIS_PASSWORD}
     database: 0
     ssl: false
     channel-prefix: landmc

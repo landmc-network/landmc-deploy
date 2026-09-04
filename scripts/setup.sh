@@ -46,8 +46,10 @@ render_to() {
 }
 
 # Velocity reads the secret from a file, which keeps it out of velocity.toml.
-# Both the proxy and the limbo verify the same secret: the limbo is a real server on the
-# network, and one that accepted unauthenticated connections would be a way around the proxy.
+# Every backend verifies the same secret. The limbo is as much a server on this network as the
+# lobby is, and one that accepted unauthenticated connections would be a way around the proxy.
+# Paper backends read it from their own config instead - see below - so this covers the two
+# that read a file.
 for target in servers/proxy servers/limbo; do
     mkdir -p "$target"
     printf '%s' "$FORWARDING_SECRET" > "$target/forwarding.secret"
@@ -59,6 +61,7 @@ done
 # schema version and Paper migrates it between releases - so the two keys the deployment owns
 # are edited in place rather than the whole file being shipped from here.
 python3 scripts/paper-proxy-config.py servers/lobby/config/paper-global.yml
+python3 scripts/paper-proxy-config.py servers/skyblock/config/paper-global.yml
 
 # The lobby is a build that is pasted in, not terrain, so its world is generated empty.
 python3 scripts/bukkit-generator.py servers/lobby/bukkit.yml lobby landmc-lobby

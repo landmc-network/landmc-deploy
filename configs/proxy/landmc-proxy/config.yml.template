@@ -44,5 +44,6 @@ menus:
   servers-enabled: true
   servers:
     lobby: Lobby
+    skyblock: SkyBlock
   # A socket, not a Minecraft ping: the backends run with enable-status=false.
   reachability-timeout-millis: 1500

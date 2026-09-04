@@ -25,8 +25,10 @@ readonly ARTIFACTS=(
     "landmc-punishments|landmc-punishments|servers/proxy/plugins/landmc-punishments.jar"
     "landmc-auth|landmc-auth|servers/proxy/plugins/landmc-auth.jar"
     "landmc-menus|landmc-menus|servers/lobby/plugins/landmc-menus.jar"
+    "landmc-menus|landmc-menus|servers/skyblock/plugins/landmc-menus.jar"
     "landmc-vanish|landmc-vanish-proxy|servers/proxy/plugins/landmc-vanish-proxy.jar"
     "landmc-vanish|landmc-vanish-paper|servers/lobby/plugins/landmc-vanish-paper.jar"
+    "landmc-vanish|landmc-vanish-paper|servers/skyblock/plugins/landmc-vanish-paper.jar"
 )
 
 install_jar() {

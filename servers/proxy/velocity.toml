@@ -49,6 +49,7 @@ decompressed-bytes-per-second = 5242880
 # Container names on the compose network; no backend is reachable from outside it.
 lobby = "lobby:25565"
 limbo = "limbo:25566"
+skyblock = "skyblock:25565"
 
 # Where a player lands. The plugin has its own fallback configuration for the cases Velocity
 # cannot decide on its own.

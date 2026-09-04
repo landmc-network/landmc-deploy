@@ -127,6 +127,30 @@ services:
     # Paper needs time to save chunks; killing it early is how a world gets corrupted.
     stop_grace_period: 120s
 
+  # The SkyBlock backend. Nothing of SkyBlock is written yet - this is the server it will run
+  # on, and until then it is a second real backend, which is what the server menu, cross-server
+  # messaging and following a friend need in order to be tested at all.
+  skyblock:
+    build:
+      context: ./docker/paper
+    restart: unless-stopped
+    depends_on:
+      redis:
+        condition: service_healthy
+      mariadb:
+        condition: service_healthy
+    volumes:
+      - ./servers/skyblock:/server
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      <<: *landmc-credentials
+      JAVA_MEMORY: ${SKYBLOCK_MEMORY:-2G}
+      JAVA_OPTS: ${SKYBLOCK_JAVA_OPTS:-}
+    stdin_open: true
+    tty: true
+    networks: [internal]
+    stop_grace_period: 120s
+
 networks:
   internal:
     driver: bridge

@@ -1,9 +1,13 @@
 # LandMC Deploy
 
-Cała sieć LandMC jako jeden stack Dockera: proxy, limbo, lobby, Redis i MariaDB.
+Cała sieć LandMC jako jeden stack Dockera: proxy, limbo, lobby, skyblock, Redis i MariaDB.
 
 To repozytorium nie zawiera logiki pluginów — te są w `landmc-proxy` i `landmc-lobby`. Tutaj
 jest to, co decyduje, *jak* i *gdzie* one działają.
+
+Backend `skyblock` stoi pusty: samego SkyBlocka jeszcze nie ma. Jest tam, bo drugi prawdziwy
+backend to jedyny sposób, żeby przetestować menu serwerów, wiadomości między serwerami
+i dołączanie do znajomego — a potem po prostu wjedzie na niego plugin.
 
 ## Co się uruchamia
 
@@ -12,6 +16,7 @@ jest to, co decyduje, *jak* i *gdzie* one działają.
 | `proxy` | Velocity 4.1.1 (build 24), przypięty | tak, port `PROXY_PORT` |
 | `limbo` | NanoLimbo 1.13.0, przypięty | nie |
 | `lobby` | Paper 26.2 (build 121), przypięty | nie |
+| `skyblock` | Paper 26.2 (build 121), przypięty | nie |
 | `redis` | `redis:8-alpine` | nie |
 | `mariadb` | `mariadb:11.4` | nie |
 

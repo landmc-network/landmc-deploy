@@ -46,9 +46,14 @@ render_to() {
 }
 
 # Velocity reads the secret from a file, which keeps it out of velocity.toml.
-printf '%s' "$FORWARDING_SECRET" > servers/proxy/forwarding.secret
-chmod 600 servers/proxy/forwarding.secret
-echo "wrote servers/proxy/forwarding.secret"
+# Both the proxy and the limbo verify the same secret: the limbo is a real server on the
+# network, and one that accepted unauthenticated connections would be a way around the proxy.
+for target in servers/proxy servers/limbo; do
+    mkdir -p "$target"
+    printf '%s' "$FORWARDING_SECRET" > "$target/forwarding.secret"
+    chmod 600 "$target/forwarding.secret"
+    echo "wrote $target/forwarding.secret"
+done
 
 # Paper wants the same secret inside its own config. That file belongs to Paper - it carries a
 # schema version and Paper migrates it between releases - so the two keys the deployment owns

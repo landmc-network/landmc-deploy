@@ -12,10 +12,18 @@ bind = "0.0.0.0:25565"
 motd = "<gradient:#00FF37:#95ff00>LandMC</gradient>"
 show-max-players = 500
 
-online-mode = true
+# Off, because landmc-auth decides per account whether Mojang is asked about a player: a
+# connection is upgraded to online mode in the pre-login only for accounts whose owner turned
+# /premium on. Setting this to true instead would lock out every player who does not own the
+# game, which is most of them.
+#
+# The consequence is that this proxy is only as safe as landmc-auth being loaded. If that plugin
+# fails to start, anybody can connect under any name - so treat a proxy that reports
+# "Auth ready" missing from its startup log as a proxy that must not be exposed.
+online-mode = false
 
 # Requires the client to present a signed profile key. Left on: turning it off is what lets
-# somebody connect with another player's name through a proxy that does not verify.
+# somebody connect with another player's name through a proxy that does verify.
 force-key-authentication = true
 prevent-client-proxy-connections = false
 
@@ -40,6 +48,7 @@ decompressed-bytes-per-second = 5242880
 [servers]
 # Container names on the compose network; no backend is reachable from outside it.
 lobby = "lobby:25565"
+limbo = "limbo:25566"
 
 # Where a player lands. The plugin has its own fallback configuration for the cases Velocity
 # cannot decide on its own.

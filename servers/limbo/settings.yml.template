@@ -1,0 +1,95 @@
+# NanoLimbo - where a player waits until they have logged in.
+#
+# Written against the full schema NanoLimbo 1.13.0 ships, not a trimmed one. A key that is left
+# out is not reported, it is filled in with whatever the code falls back to, and that is how a
+# server ends up behaving unlike its own configuration file. The same mistake with velocity.toml
+# cost an afternoon of players passing login and then vanishing.
+#
+# The forwarding secret is read from a file rather than written here: NanoLimbo accepts an '@'
+# prefix for exactly that, so the secret stays in one place for the whole network.
+
+bind:
+  ip: "0.0.0.0"
+  port: 25566
+
+maxPlayers: 500
+
+ping:
+  # Nobody reaches this server directly - it is not published outside the compose network - so
+  # the ping only ever shows up in a diagnostic.
+  description: "<green>LandMC - logowanie"
+  version: "LandMC"
+  protocol: -1
+
+dimension: THE_END
+# Spectator: no hearts, no hunger bar, nothing to interact with. A player waiting to log in
+# should not look like a player who is playing.
+gameMode: 3
+secureProfile: false
+
+playerList:
+  enable: false
+  username: "LandMC"
+
+headerAndFooter:
+  enable: true
+  header: "<green><bold>LANDMC.PL"
+  footer: "<gray>Zaloguj się, aby wejść na serwer"
+
+brandName:
+  enable: true
+  content: "LandMC"
+
+# Everything a waiting player is told comes from the auth plugin on the proxy, which knows
+# whether they are registering or logging in and how many attempts are left. A fixed line here
+# would contradict it.
+joinMessage:
+  enable: false
+  text: ""
+
+bossBar:
+  enable: false
+  text: ""
+  health: 1.0
+  color: GREEN
+  division: SOLID
+
+title:
+  enable: false
+  title: ""
+  subtitle: ""
+  fadeIn: 10
+  stay: 100
+  fadeOut: 10
+
+# MODERN, because the proxy runs modern forwarding: the limbo has to verify the same secret or
+# a player could connect to it directly and skip the proxy entirely.
+infoForwarding:
+  type: MODERN
+  secret: "@/server/forwarding.secret"
+  tokens: []
+
+# Longer than the login timeout the auth plugin enforces, so a player is disconnected by us
+# with a reason rather than dropped by the limbo without one.
+readTimeout: 60000
+
+# Every connection here arrives from the proxy container, so the address logged would be the
+# proxy's for all of them. The proxy already records the real one.
+logPlayersIp: false
+
+# 2 = errors, warnings and info. At 1 the server does not even log that it started, which makes
+# every problem here look like a network problem somewhere else.
+debugLevel: 2
+
+netty:
+  transportType: EPOLL
+  threads:
+    bossGroup: 1
+    workerGroup: 4
+
+traffic:
+  enable: true
+  maxPacketSize: 8192
+  interval: 7.0
+  maxPacketRate: 500.0
+  maxPacketBytesRate: 2048.0

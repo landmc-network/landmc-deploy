@@ -79,6 +79,7 @@ services:
     environment:
       <<: *landmc-credentials
       JAVA_MEMORY: ${PROXY_MEMORY:-1G}
+      JAVA_OPTS: ${PROXY_JAVA_OPTS:-}
     # Keeps the server console usable: `docker attach landmc-proxy-1` gives the same prompt
     # a panel would, which is how an operator runs a command without a plugin for it.
     # Detach with ctrl-p ctrl-q; ctrl-c would stop the server.
@@ -86,6 +87,20 @@ services:
     tty: true
     networks: [internal]
     stop_grace_period: 30s
+
+  # Where a player waits until they have logged in. No world, no plugins, nothing to exploit.
+  limbo:
+    build:
+      context: ./docker/limbo
+    restart: unless-stopped
+    volumes:
+      - ./servers/limbo:/server
+    user: "${HOST_UID:-1000}:${HOST_GID:-1000}"
+    environment:
+      JAVA_MEMORY: ${LIMBO_MEMORY:-128M}
+      JAVA_OPTS: ${LIMBO_JAVA_OPTS:-}
+    networks: [internal]
+    stop_grace_period: 10s
 
   lobby:
     build:
@@ -102,6 +117,7 @@ services:
     environment:
       <<: *landmc-credentials
       JAVA_MEMORY: ${LOBBY_MEMORY:-2G}
+      JAVA_OPTS: ${LOBBY_JAVA_OPTS:-}
     # Keeps the server console usable: `docker attach landmc-lobby-1` gives the same prompt
     # a panel would, which is how an operator runs a command without a plugin for it.
     # Detach with ctrl-p ctrl-q; ctrl-c would stop the server.

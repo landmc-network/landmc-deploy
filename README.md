@@ -1,6 +1,6 @@
 # LandMC Deploy
 
-Cała sieć LandMC jako jeden stack Dockera: proxy, lobby, Redis i MariaDB.
+Cała sieć LandMC jako jeden stack Dockera: proxy, limbo, lobby, Redis i MariaDB.
 
 To repozytorium nie zawiera logiki pluginów — te są w `landmc-proxy` i `landmc-lobby`. Tutaj
 jest to, co decyduje, *jak* i *gdzie* one działają.
@@ -10,12 +10,24 @@ jest to, co decyduje, *jak* i *gdzie* one działają.
 | Usługa | Obraz | Widoczna z zewnątrz |
 |---|---|---|
 | `proxy` | Velocity 4.1.1 (build 24), przypięty | tak, port `PROXY_PORT` |
+| `limbo` | NanoLimbo 1.13.0, przypięty | nie |
 | `lobby` | Paper 26.2 (build 121), przypięty | nie |
 | `redis` | `redis:8-alpine` | nie |
 | `mariadb` | `mariadb:11.4` | nie |
 
 Tylko proxy ma opublikowany port. Backend osiągalny z internetu to backend, który omija proxy —
 a przy włączonym `MODERN` forwardingu wystarczy to, żeby wejść jako dowolny gracz.
+
+`limbo` to miejsce, w którym czeka gracz przed zalogowaniem: pusty świat, zero pluginów, nic do
+kliknięcia. Weryfikuje ten sam `forwarding.secret` co lobby — jest normalnym serwerem w sieci,
+a taki, który przyjmowałby połączenia bez weryfikacji, byłby drogą naokoło proxy. Sam mechanizm
+logowania jest w [`landmc-auth`](https://github.com/landmc-network/landmc-auth); tutaj jest
+tylko serwer, na którym on sadza gracza.
+
+Dlatego `online-mode` w `velocity.toml` jest **wyłączony**, a pojedyncze połączenia są podnoszone
+do trybu online przez `landmc-auth` — tylko dla kont, które same włączyły sobie `/premium`.
+Konsekwencja: to proxy jest bezpieczne dokładnie na tyle, na ile `landmc-auth` faktycznie wstał.
+Brak `Auth ready` w logu startowym oznacza proxy, którego nie wolno wystawić na świat.
 
 Obrazy Velocity i Paper budujemy sami, z przypiętym buildem i sprawdzaną sumą SHA-256. Gotowy
 obraz, który sam się aktualizuje, potrafi podmienić serwer pod działającą siecią — a to nie
@@ -77,6 +89,19 @@ backend, bez jednej linijki w logu. Przy aktualizacji Velocity porównaj ten pli
 wygenerowanym, zamiast zakładać, że stare klucze nadal wystarczą.
 
 ## Diagnostyka
+
+### Sprawdzenie logowania bez klienta Minecrafta
+
+```bash
+python3 -u scripts/mcjoin.py 127.0.0.1 25565 Tester 776 0x07 plain "zarejestruj haslo123 haslo123"
+```
+
+Wchodzi na proxy, przechodzi konfigurację i wpisuje komendy jak gracz — tyle, żeby sprawdzić,
+że niezalogowany siedzi na limbo, że reszta komend jest odrzucana i że po rejestracji trafia na
+lobby. Nie umie szyfrowania, więc nie wejdzie na konto z włączonym `/premium` — co samo w sobie
+jest przydatnym testem negatywnym. Szczegóły argumentów są w nagłówku skryptu.
+
+### Ślad logowania
 
 Proxy ma wbudowany ślad logowania. W `servers/proxy/plugins/landmc-proxy/config.yml`:
 

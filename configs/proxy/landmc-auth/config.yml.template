@@ -1,0 +1,22 @@
+# See the note in configs/proxy/landmc-proxy: deployment-owned settings only, with ${...}
+# resolved by the plugin from the container's environment.
+
+# The server names here have to match velocity.toml, not the container names.
+limbo-server: limbo
+lobby-server: lobby
+
+timeout-seconds: 60
+reminder-seconds: 5
+max-attempts: 5
+
+database:
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
+  use-ssl: false
+  # One read per connection attempt, one write per login. A login burst is the busiest this
+  # ever gets, and it is bounded by how fast players can connect.
+  pool-size: 4

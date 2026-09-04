@@ -23,6 +23,7 @@ readonly ARTIFACTS=(
     "landmc-lobby|landmc-lobby|servers/lobby/plugins/landmc-lobby.jar"
     "landmc-antiproxy|landmc-antiproxy|servers/proxy/plugins/landmc-antiproxy.jar"
     "landmc-punishments|landmc-punishments|servers/proxy/plugins/landmc-punishments.jar"
+    "landmc-auth|landmc-auth|servers/proxy/plugins/landmc-auth.jar"
     "landmc-vanish|landmc-vanish-proxy|servers/proxy/plugins/landmc-vanish-proxy.jar"
     "landmc-vanish|landmc-vanish-paper|servers/lobby/plugins/landmc-vanish-paper.jar"
 )

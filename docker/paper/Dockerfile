@@ -21,6 +21,9 @@ WORKDIR /server
 
 EXPOSE 25565
 
+# Extra JVM flags, empty by default. See the note in docker/velocity.
+ENV JAVA_OPTS=""
+
 # Aikar's flags, minus the ones that only make sense above 12 GB. The lobby is a small heap and
 # a long pause there is as visible as one on a game server.
 ENV JAVA_MEMORY=2G
@@ -29,5 +32,5 @@ ENTRYPOINT ["sh", "-c", "exec java -Xms${JAVA_MEMORY} -Xmx${JAVA_MEMORY} \
     -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch \
     -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:G1MixedGCLiveThresholdPercent=90 \
     -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem \
-    -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs \
+    -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs ${JAVA_OPTS} \
     -jar /opt/paper.jar --nogui"]

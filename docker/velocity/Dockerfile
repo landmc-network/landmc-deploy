@@ -28,4 +28,9 @@ WORKDIR /server
 EXPOSE 25565
 
 ENV JAVA_MEMORY=1G
-ENTRYPOINT ["sh", "-c", "exec java -Xms${JAVA_MEMORY} -Xmx${JAVA_MEMORY} -XX:+UseG1GC -jar /opt/velocity.jar"]
+
+# Extra JVM flags, empty by default. Having a hook for them means a diagnostic flag - a GC
+# log, a packet-decode trace - is an environment variable on one service rather than an edit to
+# this file and a rebuild of the image on a server that is currently running.
+ENV JAVA_OPTS=""
+ENTRYPOINT ["sh", "-c", "exec java -Xms${JAVA_MEMORY} -Xmx${JAVA_MEMORY} -XX:+UseG1GC ${JAVA_OPTS} -jar /opt/velocity.jar"]

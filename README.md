@@ -47,8 +47,16 @@ docker compose up -d
 kopię `.previous` każdej konfiguracji, którą nadpisał.
 
 `fetch-plugins.sh` bierze jary z **ostatniego zielonego builda CI** na `main`, więc na serwerze
-ląduje build, który przeszedł testy, a nie to, co ktoś ostatnio skompilował u siebie. Podczas
-pracy nad pluginem:
+ląduje build, który przeszedł testy, a nie to, co ktoś ostatnio skompilował u siebie. Instaluje
+wtyczki z `landmc-proxy`, `landmc-lobby` i `landmc-vanish` — ten ostatni ma dwa jary, po jednym
+na każdą stronę sieci, i oba pochodzą z tego samego builda, żeby połówki nie rozjechały się co
+do formatu wiadomości. Można zawęzić do jednego repozytorium:
+
+```bash
+./scripts/fetch-plugins.sh landmc-vanish
+```
+
+Podczas pracy nad pluginem:
 
 ```bash
 ./scripts/fetch-plugins.sh --local ../landmc-proxy/build/libs/landmc-proxy.jar

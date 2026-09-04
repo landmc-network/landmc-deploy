@@ -6,8 +6,8 @@
 # locally. Pass --local to use a working copy instead, which is what you want while developing.
 #
 # Usage:
-#   scripts/fetch-plugins.sh                      # newest green CI build of every project
-#   scripts/fetch-plugins.sh proxy                # just the proxy
+#   scripts/fetch-plugins.sh                       # newest green CI build of everything
+#   scripts/fetch-plugins.sh landmc-vanish         # only that repository's jars
 #   scripts/fetch-plugins.sh --local ../landmc-proxy/build/libs/landmc-proxy.jar
 set -euo pipefail
 
@@ -15,44 +15,39 @@ cd "$(dirname "$0")/.."
 
 readonly ORG=landmc-network
 
-# project -> the server directory its jar belongs in
-target_dir() {
-    case $1 in
-        proxy) echo servers/proxy/plugins ;;
-        lobby) echo servers/lobby/plugins ;;
-        *) echo "Unknown project: $1" >&2; return 1 ;;
-    esac
-}
+# Each entry is "repository|artifact|destination". A repository can produce more than one
+# artifact: vanish ships a jar for each side of the network, and both have to come from the same
+# build, or the two halves can disagree about the shape of a message.
+readonly ARTIFACTS=(
+    "landmc-proxy|landmc-proxy|servers/proxy/plugins/landmc-proxy.jar"
+    "landmc-lobby|landmc-lobby|servers/lobby/plugins/landmc-lobby.jar"
+    "landmc-vanish|landmc-vanish-proxy|servers/proxy/plugins/landmc-vanish-proxy.jar"
+    "landmc-vanish|landmc-vanish-paper|servers/lobby/plugins/landmc-vanish-paper.jar"
+)
 
 install_jar() {
-    local project=$1 jar=$2 directory
-    directory=$(target_dir "$project")
-    mkdir -p "$directory"
+    local jar=$1 destination=$2
+    mkdir -p "$(dirname "$destination")"
 
-    local destination="$directory/landmc-$project.jar"
     # Kept next to the jar so a bad deploy can be undone without another download.
     if [ -f "$destination" ]; then
         cp "$destination" "$destination.previous"
     fi
 
     cp "$jar" "$destination"
-    echo "$project: $(sha256sum "$destination" | cut -c1-16)  $destination"
+    echo "  $(sha256sum "$destination" | cut -c1-16)  $destination"
 }
 
 fetch_from_ci() {
-    local project=$1 repository="$ORG/landmc-$project"
-
-    if ! command -v gh > /dev/null; then
-        echo "The GitHub CLI is not installed; use --local, or install gh and run: gh auth login" >&2
-        return 1
-    fi
+    local repository_name=$1 artifact=$2 destination=$3
+    local repository="$ORG/$repository_name"
 
     local run
     run=$(gh run list --repo "$repository" --workflow Build --branch main \
         --status success --limit 1 --json databaseId --jq '.[0].databaseId')
 
     if [ -z "$run" ] || [ "$run" = "null" ]; then
-        echo "$project: no successful build on main to take a jar from" >&2
+        echo "$artifact: no successful build on main to take a jar from" >&2
         return 1
     fi
 
@@ -60,17 +55,59 @@ fetch_from_ci() {
     workspace=$(mktemp -d)
     trap 'rm -rf "$workspace"' RETURN
 
-    gh run download "$run" --repo "$repository" --name "landmc-$project" --dir "$workspace"
+    gh run download "$run" --repo "$repository" --name "$artifact" --dir "$workspace"
 
     local jar
     jar=$(find "$workspace" -name '*.jar' -type f | head -1)
     if [ -z "$jar" ]; then
-        echo "$project: build $run has no jar attached" >&2
+        echo "$artifact: build $run has no jar attached" >&2
         return 1
     fi
 
-    echo "$project: from build $run of $repository"
-    install_jar "$project" "$jar"
+    echo "$artifact: from build $run of $repository"
+    install_jar "$jar" "$destination"
+}
+
+contains() {
+    local needle=$1
+    shift
+    local candidate
+    for candidate in "$@"; do
+        if [ "$candidate" = "$needle" ]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+install_local() {
+    local jar entry name destination
+
+    for jar in "$@"; do
+        if [ ! -f "$jar" ]; then
+            echo "No such jar: $jar" >&2
+            exit 1
+        fi
+
+        name=$(basename "$jar")
+        destination=""
+        for entry in "${ARTIFACTS[@]}"; do
+            if [ "$name" = "$(basename "${entry##*|}")" ]; then
+                destination=${entry##*|}
+                break
+            fi
+        done
+
+        if [ -z "$destination" ]; then
+            echo "Cannot tell where $name belongs. Known jars:" >&2
+            for entry in "${ARTIFACTS[@]}"; do
+                echo "  $(basename "${entry##*|}")" >&2
+            done
+            exit 1
+        fi
+
+        install_jar "$jar" "$destination"
+    done
 }
 
 main() {
@@ -80,29 +117,34 @@ main() {
             echo "--local needs at least one jar path" >&2
             exit 1
         fi
-        for jar in "$@"; do
-            if [ ! -f "$jar" ]; then
-                echo "No such jar: $jar" >&2
-                exit 1
-            fi
-            case "$(basename "$jar")" in
-                landmc-proxy*) install_jar proxy "$jar" ;;
-                landmc-lobby*) install_jar lobby "$jar" ;;
-                *) echo "Cannot tell which server $jar belongs to" >&2; exit 1 ;;
-            esac
-        done
+        install_local "$@"
         return
     fi
 
-    local projects=("$@")
-    if [ ${#projects[@]} -eq 0 ]; then
-        projects=(proxy lobby)
+    if ! command -v gh > /dev/null; then
+        echo "The GitHub CLI is not installed; use --local, or install gh and run: gh auth login" >&2
+        exit 1
     fi
 
+    local wanted=("$@")
     local failed=0
-    for project in "${projects[@]}"; do
-        fetch_from_ci "$project" || failed=1
+    local entry repository_name rest artifact destination
+
+    for entry in "${ARTIFACTS[@]}"; do
+        repository_name=${entry%%|*}
+        rest=${entry#*|}
+        artifact=${rest%%|*}
+        destination=${rest#*|}
+
+        if [ ${#wanted[@]} -gt 0 ] \
+                && ! contains "$artifact" "${wanted[@]}" \
+                && ! contains "$repository_name" "${wanted[@]}"; then
+            continue
+        fi
+
+        fetch_from_ci "$repository_name" "$artifact" "$destination" || failed=1
     done
+
     return $failed
 }
 

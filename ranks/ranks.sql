@@ -25,6 +25,7 @@ VALUES
     ('default', 'landmc.command.live', 1, 'global', 'global', 0, '{}'),
     ('default', 'landmc.command.helpop', 1, 'global', 'global', 0, '{}'),
     ('vip', 'landmc.chat.cooldown.short', 1, 'global', 'global', 0, '{}'),
+    ('vip', 'landmc.lobby.fly', 1, 'global', 'global', 0, '{}'),
     ('vip', 'group.default', 1, 'global', 'global', 0, '{}'),
     ('vip', 'weight.10', 1, 'global', 'global', 0, '{}'),
     ('vip', 'prefix.10.<yellow><bold>VIP</bold> ', 1, 'global', 'global', 0, '{}'),

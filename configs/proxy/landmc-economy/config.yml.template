@@ -1,0 +1,36 @@
+# See the note in configs/proxy/landmc-proxy: deployment-owned settings only, with ${...}
+# resolved by the plugin from the container's environment.
+
+server-id: proxy-1
+
+# Where /doladuj sends players. The website is what takes the payment and credits the wallet;
+# this plugin only links to it.
+top-up-url: https://landmc.pl
+
+# Shown to players, not used to work anything out - the website does the conversion.
+diamonds-per-pln: 10
+
+history-limit: 10
+
+database:
+  type: ${LANDMC_DB_TYPE}
+  host: ${LANDMC_DB_HOST}
+  port: ${LANDMC_DB_PORT}
+  database: ${LANDMC_DB_NAME}
+  username: ${LANDMC_DB_USER}
+  password: ${LANDMC_DB_PASSWORD}
+  use-ssl: false
+  # Every purchase is one short transaction, and a player has one wallet, so the pool is
+  # sized for concurrent players rather than for concurrent queries per player.
+  pool-size: 4
+
+messaging:
+  enabled: true
+  redis:
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
+    username: ''
+    password: ${LANDMC_REDIS_PASSWORD}
+    database: 0
+    ssl: false
+    channel-prefix: landmc

@@ -61,6 +61,8 @@ LADDER = [
     ("vip", 10, plain("e", "VIP"), "default", [
         # Two seconds between messages instead of five, as it was.
         "landmc.chat.cooldown.short",
+        # Flight on the hub, the first thing the old server gave for a rank.
+        "landmc.lobby.fly",
     ]),
     ("svip", 20, plain("d", "SVIP"), "vip", [
         # Colours and emoticons in chat started here.

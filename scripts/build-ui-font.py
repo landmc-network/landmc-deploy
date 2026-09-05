@@ -115,16 +115,23 @@ def write_png(path, rows):
     path.write_bytes(png)
 
 
-# name, width, height, corner radius, RGBA
+# name, width, height, corner radius, ascent, RGBA
 #
-# The sizes are game pixels at GUI scale 1, which is what the font system measures in. The
-# colour is the one the old server's menus were drawn on: black at about 40% opacity, dark
-# enough to read white text against any world behind it.
+# Sizes are game pixels at GUI scale 1, which is the unit the font system measures in.
+#
+# Ascent is how far above the text baseline the image starts, and it is the field that decides
+# whether a panel sits behind its line or floats above it. A glyph is drawn from
+# `baseline - ascent` downwards, so a background wants a small ascent - a few pixels above the
+# letters - and gets its height from going down, over the rows that follow. Giving a tall panel
+# a tall ascent is what puts a black slab above the board instead of behind it.
+#
+# The colour is the one the old server drew its menus on: black at about 40%, dark enough to
+# read white text against any world behind it.
 PANELS = [
-    ("sidebar_head", 176, 14, 4, (0, 0, 0, 106)),
-    ("sidebar_body", 176, 82, 4, (0, 0, 0, 106)),
-    ("sidebar_foot", 176, 14, 4, (0, 0, 0, 106)),
-    ("bar", 220, 30, 6, (0, 0, 0, 106)),
+    # One panel for the whole sidebar, drawn on the title and reaching down past the last line.
+    # Simpler than a piece per row and impossible to misalign: there is only one of it.
+    ("sidebar", 176, 96, 6, 11, (0, 0, 0, 106)),
+    ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 
 
@@ -132,18 +139,15 @@ def main():
     glyphs = {}
     providers = []
 
-    for index, (name, width, height, radius, colour) in enumerate(PANELS):
+    for index, (name, width, height, radius, ascent, colour) in enumerate(PANELS):
         codepoint = FIRST_CODEPOINT + index
         write_png(TEXTURES / f"{name}.png", rounded_panel(width, height, radius, colour))
 
         providers.append({
             "type": "bitmap",
             "file": f"{NAMESPACE}:font/ui/{name}.png",
-            # The image is drawn at its own size when height matches the source, and ascent
-            # decides how far above the text baseline it starts. One below the height puts the
-            # panel's bottom edge on the baseline, which is where a background belongs.
             "height": height,
-            "ascent": height - 2,
+            "ascent": ascent,
             "chars": [chr(codepoint)],
         })
         glyphs[name] = {
@@ -151,6 +155,7 @@ def main():
             "codepoint": f"U+{codepoint:04X}",
             "width": width,
             "height": height,
+            "ascent": ascent,
         }
 
     FONTS.mkdir(parents=True, exist_ok=True)

@@ -2,29 +2,19 @@
   "font": "landmc:ui",
   "spaceFont": "landmc:space",
   "panels": {
-    "sidebar_head": {
+    "sidebar": {
       "char": "",
       "codepoint": "U+E000",
       "width": 176,
-      "height": 14
-    },
-    "sidebar_body": {
-      "char": "",
-      "codepoint": "U+E001",
-      "width": 176,
-      "height": 82
-    },
-    "sidebar_foot": {
-      "char": "",
-      "codepoint": "U+E002",
-      "width": 176,
-      "height": 14
+      "height": 96,
+      "ascent": 11
     },
     "bar": {
-      "char": "",
-      "codepoint": "U+E003",
+      "char": "",
+      "codepoint": "U+E001",
       "width": 220,
-      "height": 30
+      "height": 30,
+      "ascent": 22
     }
   },
   "spaces": {

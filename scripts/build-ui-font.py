@@ -130,7 +130,11 @@ def write_png(path, rows):
 PANELS = [
     # One panel for the whole sidebar, drawn on the title and reaching down past the last line.
     # Simpler than a piece per row and impossible to misalign: there is only one of it.
-    ("sidebar", 176, 108, 6, 12, (0, 0, 0, 106)),
+    # Wider than the board's lines and drawn a few pixels left of them, because it has a second
+    # job besides looking like a panel: covering the box the client draws behind a sidebar. That
+    # box is filled in code rather than taken from a texture, so a pack cannot remove it - but
+    # text is drawn after it, and a panel is text.
+    ("sidebar", 184, 108, 6, 12, (0, 0, 0, 235)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 

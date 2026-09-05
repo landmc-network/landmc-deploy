@@ -3,8 +3,8 @@
     {
       "type": "bitmap",
       "file": "landmc:font/ui/sidebar.png",
-      "height": 96,
-      "ascent": 11,
+      "height": 108,
+      "ascent": 12,
       "chars": [
         "\ue000"
       ]

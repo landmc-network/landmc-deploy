@@ -130,7 +130,7 @@ def write_png(path, rows):
 PANELS = [
     # One panel for the whole sidebar, drawn on the title and reaching down past the last line.
     # Simpler than a piece per row and impossible to misalign: there is only one of it.
-    ("sidebar", 176, 96, 6, 11, (0, 0, 0, 106)),
+    ("sidebar", 176, 108, 6, 12, (0, 0, 0, 106)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 

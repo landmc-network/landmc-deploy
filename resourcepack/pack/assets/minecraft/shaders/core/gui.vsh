@@ -12,10 +12,15 @@
 // does not link: that is exactly how the first attempt at this failed, by carrying a version
 // 150 file with plain `uniform mat4` into a client that wants version 330 and a UBO.
 //
-// The test itself is a heuristic and worth knowing as one. A shader is not told what it is
-// drawing, so the sidebar is identified by where it is on the screen and how deep it is in the
-// interface's own stack of layers. Nothing else in the vanilla interface sits there, which
-// makes it safe in practice rather than in principle.
+// The test is on the layer alone, and deliberately not on where the quad is on screen. Alpha
+// is a vertex attribute: the fragments between two vertices get the average of them, so a
+// screen-position test on a box that reaches past the edge of the tested band clears the
+// vertices inside it, keeps the ones outside, and leaves a fade across the difference. That is
+// what a leftover strip of the old background is. The layer is the same number at all four
+// corners, so the box either goes entirely or stays entirely.
+//
+// It remains a heuristic: a shader is not told what it is drawing, and anything else on this
+// layer would go with it.
 
 // Can't moj_import in things used during startup, when resource packs don't exist.
 // This is a copy of dynamicimports.glsl and projection.glsl
@@ -44,12 +49,7 @@ void main() {
 
     vertexColor = Color;
 
-    // Right half of the screen, in the band the board occupies, on the scoreboard's layer.
-    bool rightHalf = gl_Position.x > 0.0 && gl_Position.x <= 1.0;
-    bool boardBand = gl_Position.y > -0.5 && gl_Position.y < 0.85;
-    bool boardLayer = Position.z > SIDEBAR_NEAR && Position.z < SIDEBAR_FAR;
-
-    if (rightHalf && boardBand && boardLayer) {
+    if (Position.z > SIDEBAR_NEAR && Position.z < SIDEBAR_FAR) {
         vertexColor.a = 0.0;
     }
 }

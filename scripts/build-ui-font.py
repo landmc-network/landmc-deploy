@@ -146,6 +146,33 @@ PANELS = [
 ]
 
 
+# The bossbar colour the interface is drawn on. Its two sprites are replaced with empty images,
+# so the bar itself disappears and only its title - which is where the interface lives - is
+# left on screen.
+#
+# This is the one vanilla element a pack really can remove, because unlike the sidebar's box it
+# is a texture. Every other colour keeps its bar, so an ordinary boss fight still looks like one.
+BOSSBAR_COLOUR = "blue"
+
+# The sizes the client ships them at. A replacement has to be an image, not an empty file, and
+# these are the dimensions it expects.
+BOSSBAR_SPRITES = {
+    "background": (182, 5),
+    "progress": (182, 5),
+}
+
+
+def blank_bossbar():
+    """Writes fully transparent sprites over the bar the interface is drawn on."""
+    sprites = PACK / "assets" / "minecraft" / "textures" / "gui" / "sprites" / "boss_bar"
+
+    for suffix, (width, height) in BOSSBAR_SPRITES.items():
+        rows = [[(0, 0, 0, 0)] * width for _ in range(height)]
+        write_png(sprites / f"{BOSSBAR_COLOUR}_{suffix}.png", rows)
+
+    return sprites
+
+
 def main():
     glyphs = {}
     providers = []
@@ -199,7 +226,10 @@ def main():
                     "panels": glyphs, "spaces": spaces}, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8")
 
+    sprites = blank_bossbar()
+
     print(f"Wrote {len(PANELS)} panel(s) to {TEXTURES.relative_to(ROOT)}")
+    print(f"Blanked the {BOSSBAR_COLOUR} bossbar in {sprites.relative_to(ROOT)}")
     print(f"Wrote {(FONTS / 'ui.json').relative_to(ROOT)} and {(FONTS / 'space.json').relative_to(ROOT)}")
     print(f"Wrote {MANIFEST.relative_to(ROOT)}")
 

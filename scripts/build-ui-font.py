@@ -141,7 +141,10 @@ PANELS = [
     # The alpha cannot go much below this and still read as one surface: the client's own
     # sidebar box sits underneath and contributes its own third of black, so what a player sees
     # is this panel over that, never this panel over the world.
-    ("sidebar", 132, 108, 6, 12, (0, 0, 0, 140)),
+    # Not black. The client's box underneath is black, and black over black only ever gets
+    # darker - a panel with some light in it is the only thing that lifts the result off that
+    # floor, and it is the whole reason this reads as a surface rather than a hole.
+    ("sidebar", 132, 108, 6, 12, (38, 38, 48, 150)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 

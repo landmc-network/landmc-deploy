@@ -138,7 +138,10 @@ PANELS = [
     # the colour, which is not black: the box underneath is, and black over black only gets
     # darker. A panel with some light in it is the only thing that lifts the result off that
     # floor.
-    ("sidebar", 132, 108, 6, 12, (38, 38, 48, 150)),
+    # Translucent again: with the client's own box discarded by the core shader there is
+    # nothing black underneath to fight, so this sits on the world the way it looks like it
+    # should. If the shader ever stops applying, this goes back up - see the note in gui.vsh.
+    ("sidebar", 132, 108, 6, 12, (0, 0, 0, 120)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 

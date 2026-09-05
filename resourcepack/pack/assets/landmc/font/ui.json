@@ -30,8 +30,8 @@
     {
       "type": "bitmap",
       "file": "landmc:font/ui/bar.png",
-      "height": 30,
-      "ascent": 22,
+      "height": 34,
+      "ascent": 11,
       "chars": [
         "\ue003"
       ]

@@ -153,7 +153,10 @@ PANELS = [
     ("sidebar_head", 132, 16, 6, 12, (0, 0, 0, 120)),
     ("sidebar_body", 132, 68, 6, 11, (0, 0, 0, 120)),
     ("sidebar_foot", 132, 16, 6, 11, (0, 0, 0, 120)),
-    ("bar", 220, 30, 6, 22, (0, 0, 0, 120)),
+    # The bar across the top, over two rows of boss bar. The client stacks those nineteen
+    # pixels apart, so a panel drawn on the first one needs to reach from a little above its
+    # text down past the second: eleven up, twenty-three down.
+    ("bar", 220, 34, 6, 11, (0, 0, 0, 120)),
 ]
 
 

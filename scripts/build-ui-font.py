@@ -176,16 +176,16 @@ PANELS = [
     # Chips: the small rounded tiles a value sits in, the way the reference lays its top bar
     # out. Three widths rather than one per statistic - a tile is sized to the longest thing it
     # will ever hold, not to what it holds today.
-    # Sized to what goes in them, measured rather than chosen: the rank line is 204 pixels of
-    # text, so its tile is 220 and the row of three above it comes to the same 220 - three of
-    # 64 with fourteen between them. Equal rows are the only thing that lines two boss bar
+    # Sized to what goes in them, measured rather than chosen: the rank line is 164 pixels of
+    # text, so its tile is 180 and the row of three above it comes to the same 180 - three of
+    # 52 with twelve between them. Equal rows are the only thing that lines two boss bar
     # titles up, since each is centred on its own.
     #
     # Lighter than the board's panels. Nothing of the client's is behind these - the bar's own
     # texture is blank - so what is set here is what a player sees, rather than this on top of
     # a box that already darkened the world.
-    ("chip", 64, 16, 5, 12, (0, 0, 0, 105)),
-    ("chip_wide", 220, 16, 5, 12, (0, 0, 0, 105)),
+    ("chip", 52, 16, 5, 12, (0, 0, 0, 105)),
+    ("chip_wide", 180, 16, 5, 12, (0, 0, 0, 105)),
 ]
 
 

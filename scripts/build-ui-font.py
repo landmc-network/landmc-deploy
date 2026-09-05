@@ -128,21 +128,20 @@ def write_png(path, rows):
 # The colour is the one the old server drew its menus on: black at about 40%, dark enough to
 # read white text against any world behind it.
 PANELS = [
-    # One panel for the whole sidebar, drawn on the title and reaching down past the last line.
-    # Simpler than a piece per row and impossible to misalign: there is only one of it.
+    # Three separate blocks rather than one, the way the old server's boards and the reference
+    # this was modelled on are drawn: a bar for the name, a body for the contents, a bar for the
+    # address, with a gap of a few pixels showing the world between them.
     #
-    # It has a second job besides looking like a panel, which is covering the box the client
-    # draws behind a sidebar. That box is filled in code rather than taken from a texture, so
-    # no image in a pack replaces it - but text is drawn after it, and a panel is text. Hence
-    # the width, which is the widest line the board has plus a margin either side, and hence
-    # the colour, which is not black: the box underneath is, and black over black only gets
-    # darker. A panel with some light in it is the only thing that lifts the result off that
-    # floor.
-    # Translucent again: with the client's own box discarded by the core shader there is
-    # nothing black underneath to fight, so this sits on the world the way it looks like it
-    # should. If the shader ever stops applying, this goes back up - see the note in gui.vsh.
-    ("sidebar", 132, 108, 6, 12, (0, 0, 0, 120)),
-    ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
+    # The gaps are not drawn. They are what is left when a panel stops short of the next one, so
+    # each height here is "how many rows does this cover" minus a little - and the empty sidebar
+    # lines between the blocks are what moves the next panel down past the gap.
+    #
+    # Ascent is the same for all three because they are all drawn on a line of text and all want
+    # to start a few pixels above it. The height is what differs.
+    ("sidebar_head", 132, 16, 6, 12, (0, 0, 0, 120)),
+    ("sidebar_body", 132, 76, 6, 12, (0, 0, 0, 120)),
+    ("sidebar_foot", 132, 16, 6, 12, (0, 0, 0, 120)),
+    ("bar", 220, 30, 6, 22, (0, 0, 0, 120)),
 ]
 
 

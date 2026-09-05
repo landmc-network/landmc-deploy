@@ -2,11 +2,29 @@
   "providers": [
     {
       "type": "bitmap",
-      "file": "landmc:font/ui/sidebar.png",
-      "height": 108,
+      "file": "landmc:font/ui/sidebar_head.png",
+      "height": 16,
       "ascent": 12,
       "chars": [
         "\ue000"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/ui/sidebar_body.png",
+      "height": 76,
+      "ascent": 12,
+      "chars": [
+        "\ue001"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/ui/sidebar_foot.png",
+      "height": 16,
+      "ascent": 12,
+      "chars": [
+        "\ue002"
       ]
     },
     {
@@ -15,7 +33,7 @@
       "height": 30,
       "ascent": 22,
       "chars": [
-        "\ue001"
+        "\ue003"
       ]
     }
   ]

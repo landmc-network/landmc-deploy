@@ -176,7 +176,7 @@ PANELS = [
     # Chips: the small rounded tiles a value sits in, the way the reference lays its top bar
     # out. Three widths rather than one per statistic - a tile is sized to the longest thing it
     # will ever hold, not to what it holds today.
-    ("chip", 56, 16, 5, 12, (0, 0, 0, 150)),
+    ("chip", 52, 16, 5, 12, (0, 0, 0, 150)),
     ("chip_wide", 176, 16, 5, 12, (0, 0, 0, 150)),
 ]
 

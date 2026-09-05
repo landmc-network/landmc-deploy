@@ -6,7 +6,9 @@
 # cost an afternoon of players passing login and then vanishing.
 #
 # The forwarding secret is read from a file rather than written here: NanoLimbo accepts an '@'
-# prefix for exactly that, so the secret stays in one place for the whole network.
+# prefix for exactly that, so the secret stays in one place for the whole network. The path is
+# relative to the working directory, which is what makes this file portable - an absolute
+# /server/... path is the container mount point under Compose and nothing anywhere else.
 
 bind:
   ip: "0.0.0.0"
@@ -66,7 +68,7 @@ title:
 # a player could connect to it directly and skip the proxy entirely.
 infoForwarding:
   type: MODERN
-  secret: "@/server/forwarding.secret"
+  secret: "@forwarding.secret"
   tokens: []
 
 # Longer than the login timeout the auth plugin enforces, so a player is disconnected by us

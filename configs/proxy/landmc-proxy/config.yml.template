@@ -47,3 +47,22 @@ menus:
     skyblock: SkyBlock
   # A socket, not a Minecraft ping: the backends run with enable-status=false.
   reachability-timeout-millis: 1500
+
+# /live - a streamer announces their stream to the whole network.
+#
+# Off until the credentials exist: without them nothing can be verified, and an announcement
+# that is not verified is an advertising slot. Both are OAuth applications you register on the
+# platform - Twitch at dev.twitch.tv/console/apps, Kick in its developer settings.
+#
+# They can be written here or given as ${VARIABLE}, resolved from the container's environment
+# exactly like the database credentials - which is what keeps them out of a file somebody
+# pastes into a ticket.
+live:
+  enabled: false
+  cooldown-minutes: 30
+  twitch:
+    client-id: ''
+    client-secret: ''
+  kick:
+    client-id: ''
+    client-secret: ''

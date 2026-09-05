@@ -1,0 +1,17 @@
+# See the note in configs/proxy.
+#
+# No catalogue here: what a cosmetic costs and what it draws is decided in landmc-economy and
+# travels with the message. This server only needs to know how to listen.
+
+server-id: lobby-1
+
+messaging:
+  enabled: true
+  redis:
+    host: ${LANDMC_REDIS_HOST}
+    port: ${LANDMC_REDIS_PORT}
+    username: ''
+    password: ${LANDMC_REDIS_PASSWORD}
+    database: 0
+    ssl: false
+    channel-prefix: landmc

@@ -57,6 +57,7 @@ LADDER = [
         "landmc.command.server",
         "landmc.command.live",
         "landmc.command.helpop",
+        "landmc.command.report",
     ]),
     ("vip", 10, plain("e", "VIP"), "default", [
         # Two seconds between messages instead of five, as it was.
@@ -83,6 +84,9 @@ LADDER = [
         "landmc.chat.links",
         "landmc.command.helpop.receive",
         "landmc.command.helpop.nodelay",
+        # Reports land with the same people who answer helpop; the old server used the
+        # POMOCNIK rank for both.
+        "landmc.report.receive",
         "landmc.punishments.kick",
         "landmc.punishments.warn",
         "landmc.punishments.history",

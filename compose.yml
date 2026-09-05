@@ -151,6 +151,29 @@ services:
     networks: [internal]
     stop_grace_period: 120s
 
+  # The network's resource pack, and the manifest that describes it.
+  #
+  # The one other service with a published port, and for a reason the others do not have: the
+  # pack is downloaded by the player's own client, not by anything inside this stack. The proxy
+  # reads the manifest over the internal network; everybody else reads one static zip.
+  #
+  # Nothing here is writable. Run scripts/build-resourcepack.sh to change what it serves.
+  resourcepack:
+    image: nginx:1.27-alpine
+    restart: unless-stopped
+    ports:
+      - "${RESOURCEPACK_PORT:-8082}:8082"
+    volumes:
+      - ./resourcepack/www:/srv/resourcepack:ro
+      - ./resourcepack/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks: [internal]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8082/manifest.json"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
 networks:
   internal:
     driver: bridge

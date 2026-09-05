@@ -17,10 +17,14 @@ i dołączanie do znajomego — a potem po prostu wjedzie na niego plugin.
 | `limbo` | NanoLimbo 1.13.0, przypięty | nie |
 | `lobby` | Paper 26.2 (build 121), przypięty | nie |
 | `skyblock` | Paper 26.2 (build 121), przypięty | nie |
+| `resourcepack` | `nginx:1.27-alpine` | tak, port `RESOURCEPACK_PORT` |
 | `redis` | `redis:8-alpine` | nie |
 | `mariadb` | `mariadb:11.4` | nie |
 
-Tylko proxy ma opublikowany port. Backend osiągalny z internetu to backend, który omija proxy —
+Poza proxy publikowany jest jeszcze tylko `resourcepack`, i to z innego powodu: paczkę pobiera
+klient gracza, a nie cokolwiek wewnątrz tej sieci. Serwuje statyczne pliki i nic poza tym.
+
+Żaden backend nie ma opublikowanego portu. Backend osiągalny z internetu to backend, który omija proxy —
 a przy włączonym `MODERN` forwardingu wystarczy to, żeby wejść jako dowolny gracz.
 
 `limbo` to miejsce, w którym czeka gracz przed zalogowaniem: pusty świat, zero pluginów, nic do
@@ -92,6 +96,39 @@ które niekoniecznie są udokumentowanymi domyślnymi. Pominięcie `[packet-limi
 żeby każdy gracz przechodził logowanie, a potem był po cichu rozłączany przed wejściem na
 backend, bez jednej linijki w logu. Przy aktualizacji Velocity porównaj ten plik ze świeżo
 wygenerowanym, zamiast zakładać, że stare klucze nadal wystarczą.
+
+## Paczka zasobów
+
+Paczka jest jedną rzeczą serwowaną dwóm różnym czytelnikom, i stąd cały jej kształt: manifest
+czyta proxy od środka sieci, a sam plik `.zip` pobiera klient każdego gracza z zewnątrz.
+Dlatego `resourcepack` jest — obok proxy — jedyną usługą z opublikowanym portem.
+
+Zawartość paczki leży w `resourcepack/pack/`. Po każdej zmianie:
+
+```bash
+scripts/build-resourcepack.py
+```
+
+Skrypt pakuje katalog, liczy SHA-1 i zapisuje `resourcepack/www/manifest.json` razem z plikiem
+`landmc-<sha1>.zip`. Nazwa zawiera hash, więc zmieniona paczka to inny adres — klient, który ma
+starą, nie poda jej z dysku, a klient, który ma nową, nie pobierze jej drugi raz. Ten sam hash
+proxy wysyła klientowi, a Minecraft odrzuca plik, który się z nim nie zgadza.
+
+Zip jest budowany deterministycznie: posortowane wpisy, stałe daty, stałe uprawnienia. Bez tego
+przebudowanie niezmienionej paczki dałoby inny hash i cała sieć pobierałaby to samo od nowa.
+`resourcepack/pack-id` natomiast **zostaje w repozytorium i nigdy się nie zmienia** — dla
+Minecrafta to odpowiedź na pytanie „która to paczka", a nie „która wersja"; nowe id przy każdym
+buildzie każe klientom zdejmować i zakładać paczkę zamiast ją podmienić.
+
+Domyślnie adres pobierania to `http://{host}:8082/landmc-{hash}.zip`, gdzie `{host}` proxy
+podstawia adresem, pod który gracz się faktycznie połączył. Działa więc dla każdej domeny
+skierowanej na ten serwer i przeżywa zmianę którejkolwiek z nich. Stały adres wymusza
+`scripts/build-resourcepack.py --host mc.example.com`.
+
+Włączenie po stronie proxy to `resource-pack.enabled` w `plugins/landmc-proxy/config.yml` oraz
+`manifest-url: http://resourcepack:8082/manifest.json`. Uwaga na `wait-before-initial-server`:
+przy `true` awaria hostingu paczki blokuje wejście na sieć — to świadomy wybór, nie przeoczenie,
+ale wybór.
 
 ## Diagnostyka
 

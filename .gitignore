@@ -11,6 +11,10 @@ servers/*/world*/
 servers/*/plugins/
 servers/*/config/paper-global.yml
 
+# Built from resourcepack/pack/ by scripts/build-resourcepack.py. The pack is the source;
+# the zip and the manifest are what that script makes of it.
+resourcepack/www/
+
 # Kept: the previous config a deploy replaced is a local artefact, not history.
 *.previous
 servers/*/*.log

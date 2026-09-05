@@ -13,15 +13,15 @@
       "char": "",
       "codepoint": "U+E001",
       "width": 132,
-      "height": 76,
-      "ascent": 12
+      "height": 68,
+      "ascent": 11
     },
     "sidebar_foot": {
       "char": "",
       "codepoint": "U+E002",
       "width": 132,
       "height": 16,
-      "ascent": 12
+      "ascent": 11
     },
     "bar": {
       "char": "",

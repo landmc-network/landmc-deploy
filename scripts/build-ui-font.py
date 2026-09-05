@@ -138,9 +138,21 @@ PANELS = [
     #
     # Ascent is the same for all three because they are all drawn on a line of text and all want
     # to start a few pixels above it. The height is what differs.
+    # A sidebar row is nine pixels apart, not ten. Worth writing down, because every height and
+    # ascent here is derived from it and being one out per row is what made the last two blocks
+    # sit on top of each other by the tenth.
+    #
+    # Measured from the title's baseline, with the body drawn two rows below it and the address
+    # ten rows below it, these cover:
+    #
+    #   head  -12 .. 4
+    #   body    7 .. 75      (two rows down: 18 - 11)
+    #   foot   79 .. 95      (ten rows down: 90 - 11)
+    #
+    # which leaves three pixels of world between the first two and four between the last two.
     ("sidebar_head", 132, 16, 6, 12, (0, 0, 0, 120)),
-    ("sidebar_body", 132, 76, 6, 12, (0, 0, 0, 120)),
-    ("sidebar_foot", 132, 16, 6, 12, (0, 0, 0, 120)),
+    ("sidebar_body", 132, 68, 6, 11, (0, 0, 0, 120)),
+    ("sidebar_foot", 132, 16, 6, 11, (0, 0, 0, 120)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 120)),
 ]
 

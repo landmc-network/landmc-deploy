@@ -7,8 +7,10 @@
 // four things at once:
 //
 //   * the layer it is on. Measured, not guessed: this client draws it at zero or below.
-//   * the half of the screen it is on. The scoreboard is against the right edge; the chat
-//     background is the same colour on the same layer, and is on the left.
+//   * where it is on the screen. The scoreboard is against the right edge and vertically in
+//     the middle. Chat shares its colour and its layer and is on the left; the player list
+//     shares both as well and is along the top, which is why the top of the screen has to be
+//     excluded by name - being black and faint and on this layer describes all three of them.
 //   * its colour, which is pure black.
 //   * its opacity, which is the quarter or so the "background opacity" option gives it. The
 //     sheet drawn behind an open inventory is also black on this layer and reaches both halves
@@ -37,6 +39,13 @@ out vec4 fragColor;
 /** Above this the quad is a sheet over a whole screen, not a background behind a few lines. */
 const float MAXIMUM_OPACITY = 0.6;
 
+/**
+ * The top of the screen, where the player list is drawn, in normalised coordinates - 1 is the
+ * top edge and -1 the bottom. The scoreboard begins well below this; the player list never
+ * reaches it.
+ */
+const float PLAYER_LIST_BOTTOM = 0.7;
+
 void main() {
     vec4 color = vertexColor;
     if (color.a == 0.0) {
@@ -45,10 +54,11 @@ void main() {
 
     bool onBoardLayer = layer <= 0.0;
     bool rightHalf = screenPosition.x > 0.0;
+    bool belowPlayerList = screenPosition.y < PLAYER_LIST_BOTTOM;
     bool black = color.r + color.g + color.b < 0.05;
     bool faint = color.a < MAXIMUM_OPACITY;
 
-    if (onBoardLayer && rightHalf && black && faint) {
+    if (onBoardLayer && rightHalf && belowPlayerList && black && faint) {
         discard;
     }
 

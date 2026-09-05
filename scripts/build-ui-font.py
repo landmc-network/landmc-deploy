@@ -29,8 +29,25 @@ PACK = ROOT / "resourcepack" / "pack"
 NAMESPACE = "landmc"
 
 TEXTURES = PACK / "assets" / NAMESPACE / "textures" / "font" / "ui"
+ICONS = PACK / "assets" / NAMESPACE / "textures" / "font" / "icons"
 FONTS = PACK / "assets" / NAMESPACE / "font"
 MANIFEST = ROOT / "resourcepack" / "ui-glyphs.json"
+
+# The icons that came with the interface, drawn by somebody else and kept as they are. Only
+# their names are here: the images are in the pack already and the codepoints are ours, in our
+# own font, so nothing has to agree with whatever pack they were cut from.
+#
+# In their own font rather than added to the client's default one, which a pack replaces rather
+# than extends - a default.json holding eight icons and nothing else is a server where no
+# ordinary letter renders.
+ICON_NAMES = ("time", "gems", "coins", "star", "generators", "boost", "plus", "minus")
+
+# Their images are twelve pixels tall and sit two above the baseline, which is what puts them
+# level with the text beside them rather than riding over it.
+ICON_HEIGHT = 12
+ICON_ASCENT = 10
+
+FIRST_ICON_CODEPOINT = 0xE100
 
 # Where the panels' codepoints start. U+E000 is the first private use character.
 FIRST_CODEPOINT = 0xE000
@@ -156,7 +173,11 @@ PANELS = [
     # The bar across the top, over two rows of boss bar. The client stacks those nineteen
     # pixels apart, so a panel drawn on the first one needs to reach from a little above its
     # text down past the second: eleven up, twenty-three down.
-    ("bar", 220, 34, 6, 11, (0, 0, 0, 120)),
+    # Chips: the small rounded tiles a value sits in, the way the reference lays its top bar
+    # out. Three widths rather than one per statistic - a tile is sized to the longest thing it
+    # will ever hold, not to what it holds today.
+    ("chip", 56, 16, 5, 12, (0, 0, 0, 150)),
+    ("chip_wide", 176, 16, 5, 12, (0, 0, 0, 150)),
 ]
 
 
@@ -215,6 +236,26 @@ def main():
             "width": width,
             "height": height,
             "ascent": ascent,
+        }
+
+    for index, name in enumerate(ICON_NAMES):
+        if not (ICONS / f"{name}.png").is_file():
+            continue
+
+        codepoint = FIRST_ICON_CODEPOINT + index
+        providers.append({
+            "type": "bitmap",
+            "file": f"{NAMESPACE}:font/icons/{name}.png",
+            "height": ICON_HEIGHT,
+            "ascent": ICON_ASCENT,
+            "chars": [chr(codepoint)],
+        })
+        glyphs[f"icon_{name}"] = {
+            "char": chr(codepoint),
+            "codepoint": f"U+{codepoint:04X}",
+            "width": ICON_HEIGHT,
+            "height": ICON_HEIGHT,
+            "ascent": ICON_ASCENT,
         }
 
     FONTS.mkdir(parents=True, exist_ok=True)

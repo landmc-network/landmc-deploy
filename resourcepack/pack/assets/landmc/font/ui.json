@@ -29,11 +29,92 @@
     },
     {
       "type": "bitmap",
-      "file": "landmc:font/ui/bar.png",
-      "height": 34,
-      "ascent": 11,
+      "file": "landmc:font/ui/chip.png",
+      "height": 16,
+      "ascent": 12,
       "chars": [
         "\ue003"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/ui/chip_wide.png",
+      "height": 16,
+      "ascent": 12,
+      "chars": [
+        "\ue004"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/time.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue100"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/gems.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue101"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/coins.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue102"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/star.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue103"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/generators.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue104"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/boost.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue105"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/plus.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue106"
+      ]
+    },
+    {
+      "type": "bitmap",
+      "file": "landmc:font/icons/minus.png",
+      "height": 12,
+      "ascent": 10,
+      "chars": [
+        "\ue107"
       ]
     }
   ]

@@ -23,12 +23,75 @@
       "height": 16,
       "ascent": 11
     },
-    "bar": {
+    "chip": {
       "char": "",
       "codepoint": "U+E003",
-      "width": 220,
-      "height": 34,
-      "ascent": 11
+      "width": 56,
+      "height": 16,
+      "ascent": 12
+    },
+    "chip_wide": {
+      "char": "",
+      "codepoint": "U+E004",
+      "width": 176,
+      "height": 16,
+      "ascent": 12
+    },
+    "icon_time": {
+      "char": "",
+      "codepoint": "U+E100",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_gems": {
+      "char": "",
+      "codepoint": "U+E101",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_coins": {
+      "char": "",
+      "codepoint": "U+E102",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_star": {
+      "char": "",
+      "codepoint": "U+E103",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_generators": {
+      "char": "",
+      "codepoint": "U+E104",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_boost": {
+      "char": "",
+      "codepoint": "U+E105",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_plus": {
+      "char": "",
+      "codepoint": "U+E106",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
+    },
+    "icon_minus": {
+      "char": "",
+      "codepoint": "U+E107",
+      "width": 12,
+      "height": 12,
+      "ascent": 10
     }
   },
   "spaces": {

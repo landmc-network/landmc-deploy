@@ -130,21 +130,15 @@ def write_png(path, rows):
 PANELS = [
     # One panel for the whole sidebar, drawn on the title and reaching down past the last line.
     # Simpler than a piece per row and impossible to misalign: there is only one of it.
-    # Wider than the board's lines and drawn a few pixels left of them, because it has a second
-    # job besides looking like a panel: covering the box the client draws behind a sidebar. That
-    # box is filled in code rather than taken from a texture, so a pack cannot remove it - but
-    # text is drawn after it, and a panel is text.
-    # Sized to the widest line the board actually has - "Statystyki gracza" at 106 pixels -
-    # plus a margin either side, rather than to a round number. A panel wider than its text is
-    # a panel with a hole in the middle of it.
     #
-    # The alpha cannot go much below this and still read as one surface: the client's own
-    # sidebar box sits underneath and contributes its own third of black, so what a player sees
-    # is this panel over that, never this panel over the world.
-    # Back to a translucent panel now that the core shader takes the client's own box away:
-    # there is nothing black underneath any more, so this sits on the world the way it looks
-    # like it should.
-    ("sidebar", 132, 108, 6, 12, (0, 0, 0, 120)),
+    # It has a second job besides looking like a panel, which is covering the box the client
+    # draws behind a sidebar. That box is filled in code rather than taken from a texture, so
+    # no image in a pack replaces it - but text is drawn after it, and a panel is text. Hence
+    # the width, which is the widest line the board has plus a margin either side, and hence
+    # the colour, which is not black: the box underneath is, and black over black only gets
+    # darker. A panel with some light in it is the only thing that lifts the result off that
+    # floor.
+    ("sidebar", 132, 108, 6, 12, (38, 38, 48, 150)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 
@@ -152,6 +146,13 @@ PANELS = [
 def main():
     glyphs = {}
     providers = []
+
+    # Cleared rather than written over. A panel dropped from the list leaves its image behind
+    # otherwise, and a pack that ships glyphs no font refers to is a pack nobody can reason
+    # about from its contents.
+    if TEXTURES.is_dir():
+        for stale in TEXTURES.glob("*.png"):
+            stale.unlink()
 
     for index, (name, width, height, radius, ascent, colour) in enumerate(PANELS):
         codepoint = FIRST_CODEPOINT + index

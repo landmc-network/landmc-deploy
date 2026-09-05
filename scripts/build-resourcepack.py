@@ -43,7 +43,12 @@ FIXED_TIME = (1980, 1, 1, 0, 0, 0)
 
 MANIFEST = {
     "version": 1,
+    # Forced, so a player who takes it gets it without being asked - and forgiven, so a player
+    # the pack fails for comes in anyway and sees a plainer interface. Those are two questions
+    # and the answer to the second is never "close the door": a build that does not load is our
+    # mistake, and it is the one failure a player can do nothing about.
     "required": True,
+    "kickOnFailure": False,
     "prompt": "<green>LandMC <dark_gray>» <gray>Paczka zasobów jest wymagana, aby grać.",
     "maxAttempts": 3,
     "retryDelayMillis": 2000,
@@ -126,7 +131,8 @@ def main():
     # Written in the order the proxy's record declares, so a diff between two builds shows the
     # hash changing rather than the whole file.
     ordered = {key: manifest[key] for key in (
-        "version", "packId", "sha1", "urlTemplate", "required", "prompt", "maxAttempts",
+        "version", "packId", "sha1", "urlTemplate", "required", "kickOnFailure", "prompt",
+        "maxAttempts",
         "retryDelayMillis", "retryMessage", "declinedKickMessage", "downloadFailedKickMessage",
         "sendDelayMillis", "resendAfterRebuild")}
 

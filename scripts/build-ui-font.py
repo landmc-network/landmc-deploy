@@ -134,7 +134,14 @@ PANELS = [
     # job besides looking like a panel: covering the box the client draws behind a sidebar. That
     # box is filled in code rather than taken from a texture, so a pack cannot remove it - but
     # text is drawn after it, and a panel is text.
-    ("sidebar", 184, 108, 6, 12, (0, 0, 0, 235)),
+    # Sized to the widest line the board actually has - "Statystyki gracza" at 106 pixels -
+    # plus a margin either side, rather than to a round number. A panel wider than its text is
+    # a panel with a hole in the middle of it.
+    #
+    # The alpha cannot go much below this and still read as one surface: the client's own
+    # sidebar box sits underneath and contributes its own third of black, so what a player sees
+    # is this panel over that, never this panel over the world.
+    ("sidebar", 132, 108, 6, 12, (0, 0, 0, 140)),
     ("bar", 220, 30, 6, 22, (0, 0, 0, 106)),
 ]
 

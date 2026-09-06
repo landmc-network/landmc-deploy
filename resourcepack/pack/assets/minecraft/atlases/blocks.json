@@ -1,1 +1,64 @@
-{"sources":[{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_1_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_2_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_3_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_4_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_5_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:animated/wings_6_animated"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_1"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_2"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_3"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_4"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_5"},{"type":"single","resource":"plny_fantastic_wings_v3:wings_6"}]}
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_1_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_2_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_3_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_4_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_5_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:animated/wings_6_animated"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_1"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_2"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_3"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_4"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_5"
+    },
+    {
+      "type": "single",
+      "resource": "plny_fantastic_wings_v3:wings_6"
+    },
+    {
+      "source": "entity/models",
+      "prefix": "entity/models/",
+      "type": "directory"
+    },
+    {
+      "pattern": {
+        "namespace": "minecraft",
+        "path": "entity/fishing_hook"
+      },
+      "type": "filter"
+    }
+  ]
+}
